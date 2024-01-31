@@ -1,0 +1,3 @@
+C:\Users\julia\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\233.14015.92\bin\cmake\win\x64\bin\cmake.exe -E rm -f CMakeFiles\Oblig1Oppgave1.dir/objects.a
+C:\Users\julia\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\233.14015.92\bin\mingw\bin\ar.exe qc CMakeFiles\Oblig1Oppgave1.dir/objects.a @CMakeFiles\Oblig1Oppgave1.dir\objects1.rsp
+C:\Users\julia\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\233.14015.92\bin\mingw\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\Oblig1Oppgave1.dir/objects.a -Wl,--no-whole-archive -o Oblig1Oppgave1.exe -Wl,--out-implib,libOblig1Oppgave1.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Oblig1Oppgave1.dir\linkLibs.rsp

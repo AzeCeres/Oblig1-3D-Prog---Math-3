@@ -1,3 +1,3 @@
-C:/Users/julia/OneDrive/Dokumenter/HINN Arbeid/Math3/Oblig1Oppgave1/cmake-build-debug/CMakeFiles/Oblig1Oppgave1.dir
-C:/Users/julia/OneDrive/Dokumenter/HINN Arbeid/Math3/Oblig1Oppgave1/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/julia/OneDrive/Dokumenter/HINN Arbeid/Math3/Oblig1Oppgave1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/julia/Documents/Hinn Arbeid/Oblig1-3D-Prog---Math-3/Oblig1Oppgave1/cmake-build-debug/CMakeFiles/Oblig1Oppgave1.dir
+C:/Users/julia/Documents/Hinn Arbeid/Oblig1-3D-Prog---Math-3/Oblig1Oppgave1/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/julia/Documents/Hinn Arbeid/Oblig1-3D-Prog---Math-3/Oblig1Oppgave1/cmake-build-debug/CMakeFiles/rebuild_cache.dir

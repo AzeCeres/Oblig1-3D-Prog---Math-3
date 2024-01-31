@@ -7,13 +7,16 @@
 using namespace std;
 double func     (double x){return 3*pow(x,2);}
 double derFunc  (double x){return 6*x;}
-int range[2]{0,10};
+int range[2]{-5,5};
 float resolution{.25f};
 struct Vertex {
     vector<double>   vertexPos{0};
     vector<double>   vertexRGB{0}; //RGB
     double           derVertex{0};
 } ;
+
+void SpiralingData();
+
 Vertex vert;
 vector<Vertex> vertices;
 int main() {
@@ -56,5 +59,32 @@ int main() {
         << "  Derived = " << vertices.at(i).derVertex << endl;
     }
     fileToWriteTo.close();
+    SpiralingData();
     return 0;
+}
+
+void SpiralingData() {
+    ofstream fileToWriteTo;
+    fileToWriteTo.open("c:/data/CircleData.txt", ios::trunc);
+
+    int fullCircles = 5;
+    int indicesPerCircle = 90;
+    int totalIndicesAmount = indicesPerCircle*fullCircles;
+    float angleDiff = 360/indicesPerCircle;
+    float curAngle = 0;
+
+    float startRadius{1};
+    float endRadius{0.1f};
+    float radius = startRadius;
+    fileToWriteTo << totalIndicesAmount << endl;
+
+    for (int i = 0; i < totalIndicesAmount; ++i) {
+        radius -= (startRadius - endRadius)/totalIndicesAmount;
+        curAngle += angleDiff;
+        float xVal = 0 + radius * cos(curAngle);
+        float yVal = 0 + radius * sin(curAngle);
+        fileToWriteTo << xVal << endl;
+        fileToWriteTo << yVal << endl;
+    }
+    fileToWriteTo.close();
 }
