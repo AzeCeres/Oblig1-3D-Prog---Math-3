@@ -70,7 +70,7 @@ void SpiralingData() {
     int fullCircles = 5;
     int indicesPerCircle = 90;
     int totalIndicesAmount = indicesPerCircle*fullCircles;
-    float angleDiff = 360/indicesPerCircle;
+    float angleDiff = 360/indicesPerCircle; // 360 degrees divided by the amount of indices per circle
     float curAngle = 0;
 
     float startRadius{1};
