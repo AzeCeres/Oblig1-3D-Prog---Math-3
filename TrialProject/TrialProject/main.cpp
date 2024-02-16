@@ -20,25 +20,6 @@ unsigned int ShaderProgram(unsigned vertexShader, unsigned fragmentShader);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-//const char* vertexShaderSource = "#version 330 core\n"
-//    "layout (location = 0) in vec3 aPos;\n"
-//	"layout (location = 1) in vec3 aColor;\n"
-//    "out vec3 ourColor;\n"
-//    "void main()\n"
-//    "{\n"
-//    "   gl_Position = vec4(aPos, 1.0);\n"
-//	"   ourColor = aColor;\n"
-//    "}\0";
-//const char* fragmentShaderSource = "#version 330 core\n"
-//    "out vec4 FragColor;\n"
-//	    "in vec3 ourColor;\n"
-//    //"uniform vec4 ourColor;\n"
-//    "void main()\n"
-//    "{\n"
-//    "   FragColor = vec4(ourColor,1.0);\n"
-//    "}\n\0";
-
-
 void InitGLFW()
 {
     //Initializing GLFW
@@ -85,40 +66,99 @@ int main()
     // ------------------------------------------------------------------
     std::ifstream inn;
     inn.open("c:/data/VertexData.txt");
-    int verticiesCount;
-    inn >> verticiesCount;
-    float vertices[512]{0}; // arbitrary number
-    for (int i = 0; i < verticiesCount; i++){
-        inn >> vertices[i];
-    }
-    for (int i = 0; i < verticiesCount; ++i)
+    struct Vertex
     {
-	    std::cout <<vertices[i] << " ";
+	    std::vector<float> vertexData;
+    };
+	std::vector<Vertex> vertices;
+	std::vector<int> indices; //reference to the vertices vector
+    int  infoCount;
+    inn >> infoCount;
+    float vertexData[512]{0}; // arbitrary number
+	float maxY{INT16_MIN}, minY{INT16_MAX}, maxX{INT16_MIN}, minX{INT16_MAX};
+    for (int i = 0; i < infoCount; i++){
+    	inn >> vertexData[i];
+	    
+        
+    }
+	float minx, miny, maxx, maxy;
+	minx = miny = maxx = maxy = 0;
+
+	for (int i = 0; i < infoCount; i++) {
+		if ((i+3)%3 == 0 && (i+3)%6 != 0) // is X
+			{
+			if (vertexData[i] > maxx)
+				maxx = vertexData[i];
+			if (vertexData[i] < minx)
+				minx = vertexData[i];
+			}
+		if ((i+2)%3 == 0 && (i+2)%6 != 0) // is Y
+		{
+			std::cout << "y = " << vertexData[i];
+			if (vertexData[i] > maxy)
+				maxy = vertexData[i];
+			if (vertexData[i] < miny)
+				miny = vertexData[i];
+		}
+	}
+
+	float xscale, yscale;
+	xscale = abs(minx) > abs(maxx) ? abs(minx) : abs(maxx);
+	yscale = abs(miny) > abs(maxy) ? abs(miny) : abs(maxy);
+
+	for (int i = 0; i < infoCount; i++)
+	{
+		if ((i+3)%3 == 0 && (i+3)%6 != 0) // is X
+			vertexData[i] /= xscale;
+		if ((i+2)%3 == 0 && (i+2)%6 != 0) // is Y
+			vertexData[i] /= yscale;
+	}
+	int vertexIndex = 0;
+	Vertex curVertex;
+	// got to get lowest x & y, and highest x & y and scale
+    for (int i = 0; i < infoCount; ++i)
+    {
+    	curVertex.vertexData.emplace_back(vertexData[i]);
+	    std::cout <<curVertex.vertexData[curVertex.vertexData.size()-1] << " ";
     	if ((i+1)%3 == 0)
     	{
     		std::cout << ", ";
     	}
 	    if ((i+1)%6 == 0)
 	    {
+	    	vertices.emplace_back(curVertex);
+	    	curVertex.vertexData.clear();
 		    std::cout << std::endl;
 	    }
     }
-    //unsigned int indices[] = {  // note that we start from 0!
-    //    0, 1, 3,   // first triangle
-    //    1, 2, 3    // second triangle
-    //};
+	std::cout << vertices.size();
+	//std::vector<>
+    for (int i = 0; i < vertices.size(); ++i)
+    {
+    	if (i-1 >= 0)
+			indices.emplace_back(i-1);
+    	indices.emplace_back(i);
+	    std::cout << i-1 << ", " << i << std::endl;
+    }
 
 	// Create VBO and VAO
 	GLuint VBO, VAO;
 	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
 
+	// our index array in a element buffer for OpenGL to use
+	unsigned int EBO;
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
+	//glDrawElements(GL_LINES, sizeof(indices), GL_UNSIGNED_INT, 0);
+	
 	// Bind VAO
 	glBindVertexArray(VAO);
 
 	// Bind VBO and copy vertex data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
 	// Set vertex attribute pointers
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -126,12 +166,7 @@ int main()
 
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-
-    // uncomment this call to draw in wireframe polygons.
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
-
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -144,18 +179,12 @@ int main()
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        // draw our first triangle
+    	
         ourShader.use();
-        //float timeValue = glfwGetTime();
-        //float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-		//float redValue = (cos(timeValue) / 2.0f) + 0.5f;
-		//float blueValue = (-sin(timeValue) / 2.0f) + 0.5f;
-        //int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        //glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
     	
     	glBindVertexArray(VAO);
-    	glDrawArrays(GL_LINE_STRIP, 0, 3);
+    	glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
+    	//glDrawElements(GL_LINE, vertices.size(), GL_UNSIGNED_INT, 0);
        
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -163,6 +192,7 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+	
     glBindVertexArray(0); // no need to unbind it every time 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
